@@ -1,10 +1,6 @@
 $(document).ready(function() {
 
-	//print all old posts
-	for (key in localStorage) {
-		old_post = localStorage[key]; 
-	   $("#news").after(old_post);
-	}
+
 
 	$('#msg').bind('keyup', function(e) {
 		//if key pressed is enter
