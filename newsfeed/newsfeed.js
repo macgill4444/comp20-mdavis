@@ -15,8 +15,6 @@ $(document).ready(function() {
 		}
 	});
 
-
-
 	function storePost(post) 
 	{
 		if(typeof(Storage) !== "undefined") {
@@ -25,6 +23,8 @@ $(document).ready(function() {
 			//no local storage support 
 		}
 	}
+
+
 
 
 });
