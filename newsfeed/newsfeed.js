@@ -16,6 +16,7 @@ $(document).ready(function() {
 		    storePost(post);
 		    $("#news").after(post);
 		    //clear input field
+		    $(this).val("");		    
 		}
 	});
 
