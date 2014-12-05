@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Web Programming Assignment 5</title>
+
+	<!-- Bootstrap Core CSS -->
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom CSS -->
+	<link href="css/full-slider.css" rel="stylesheet">
+	<link href="css/custom.css" rel="stylesheet">
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+</head>
+
+<body>
+
+	<!-- Navigation -->
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#introduction">Assignment 5</a>
+			</div>
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li>
+						<a href="#introduction">Introduction</a>
+					</li>
+					<li>
+						<a href="#methodology">Methodology</a>
+					</li>
+					<li>
+						<a href="#abstract">Abstract</a>
+					</li>
+					<li>
+						<a href="#issues">Issues</a>
+					</li>
+					<li>
+						<a href="#conclusion">Conclusion</a>
+					</li>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container -->
+	</nav>
+
+<!-- INTRODUCTION -->
+	<div id="introduction" class="container">
+
+		<div class="row">
+			<div class="col-lg-12">
+				<h1>Introduction</h1>
+				<hr>
+				<p>I was hired to look into the security of my friend Max Ettelston's website <code>http://desolate-bastion-4806.herokuapp.com/</code>. This website has several pages that each have different purposes. The index page reveals a list of logins with their latitude and longitude sorted by timestamp. <code>http://desolate-bastion-4806.herokuapp.com/sendLocation</code> takes POST requests with login, latitude and longitude. <code>http://desolate-bastion-4806.herokuapp.com/locations.json</code> takes a login query and returns a list of user with that same login sorted by time stamp. There were several other pages on the website, but I focused on these few as they dealt most significantly with taking user input and inserting and querying the database.</p>
+			</div>
+		</div>
+	</div>
+
+<!-- METHODOLOGY -->
+	<div id="methodology" class="container">
+
+		<div class="row">
+			<div class="col-lg-12">
+				<h1>Methodology</h1>
+				<hr>
+				<p>To begin to pen-test the websites I followed a 'black box' methodology which assumes the role of an outside attacker and therefore does not look at the source code. I primarily attacked the Assignment 4 website as it was hosted and I could therefore utilize <code>curl</code> tool from my terminal. After a bit of 'black box' testing I looked at the code and found a few more vulnerabilities.</p>
+			</div>
+		</div>
+
+	</div>
+
+<!-- ABSTRACT -->
+	<div id="abstract" class="container">
+
+		<div class="row">
+			<div class="col-lg-12">
+				<h1>Abstract</h1>
+				<hr>
+				<p>I found significant vulnerabilities in this web application. As with most vulernable websites, the major source of vulnerabilities came from the web application failing to santize or validate client-side data, particularly user input. Failure to sanitize and validate user input allows attackers to enter illegal parameters, inject HTML and javascript, overload to the database or extract huge amounts of data from database. Below these issues as well as their associated risks are described in more detail.</p>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<div id="issues" class="container">
+
+		<div class="row">
+			<div class="col-md-12">
+				<h1>Bad Parameters / Parameter Tampering</h1>
+				<hr>
+			</div>
+			<div class="col-md-10 col-md-offset-1 text-left">
+				<p> Right away using <code>curl</code>, I began testing how the application could deal with user input. I was able to set the <code>lat</code> and <code>lng</code> of a POST request to <code>http://desolate-bastion-4806.herokuapp.com/sendLocation</code> as null. You can see that my post was successful as I received the json of students and their locations in response. This also means that I could enter false latitude and longitude coordinates even if they matched the correct format.</p>
+			</div>
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<img src="imgs/null_curl.png" alt="Null Curl Example" class="img-responsive img-rounded">
+			</div>				
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<p> Here you can see the data posted to the main site <code>http://desolate-bastion-4806.herokuapp.com/</code>: </p>	
+				<img src="imgs/null_posted.png" alt="Null Website Example" class="img-responsive img-rounded border-black">
+			</div>
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<p> Severity of issue: <span class="low">LOW</span> </p>	
+				<p> While a definite problem being able to enter bad parameters is not a giant problem. Bad parameters mean that anyone can enter in their latitude or longitude and users will clearly not trust the site, but your site could continue to function somewhat normally. The bigger issue lies in the fact that attackers can enter more dangerous input as parameters as I will describe below.</p>	
+			</div>
+		</div>
+		<br>
+	</div>
+
+	<div class="container">
+
+		<div class="row">
+			<div class="col-md-12">
+				<h1>HTML Injection</h1>
+				<hr>
+			</div>
+			<div class="col-md-10 col-md-offset-1 text-left">
+				<p>After entering various latitude and longitude numbers I wanted to see if I could inject the site with code. I began by first attempting to insert HTML code to see if it would render on the site. I was able to enter <code>MING WAS HERE AND HE HACKED YOUR SITE</code> as the login parameter in a curl POST request to <code>http://desolate-bastion-4806.herokuapp.com/sendLocation</code></p>
+			</div>
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<img src="imgs/html_curl.png" alt="HTML Curl Example" class="img-responsive img-rounded">
+			</div>				
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<p> Here you can see the data posted to the main site <code>http://desolate-bastion-4806.herokuapp.com/</code>: </p>	
+				<img src="imgs/html_site.png" alt="HTML Website Example" class="img-responsive img-rounded border-black">
+			</div>
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<p> Severity of issue: <span class="medium">MEDIUM</span> </p>	
+				<p> HTML injection is a serious issue as attackers can enter any sort of information that will be rendered on your site. Once again to solve this problem we must sanitize all user input to make sure that it contains no code. This can be easily done by binding input (for example bind all input with '?') or simply not allowing certain characters such as '<' and '>' operators. </p>	
+			</div>
+		</div>
+		<br>
+	</div>	
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1>Cross-site Scripting (XSS)</h1>
+				<hr>
+			</div>
+			<div class="col-md-10 col-md-offset-1 text-left">
+				<p> Once I had successfully passed HTML code as a parameter I wanted to try passing JavaScript. I entered <code>window.alert("h@ck3d");</code> as the login parameter in a curl POST request to <code>http://desolate-bastion-4806.herokuapp.com/sendLocation</code></p>
+			</div>
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<img src="imgs/xss_curl.png" alt="HTML Curl Example" class="img-responsive img-rounded">
+			</div>				
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<p> Here you can see the data posted to the main site with the alert popping up: <code>http://desolate-bastion-4806.herokuapp.com/</code>: </p>	
+				<img src="imgs/xss_site.png" alt="HTML Website Example" class="img-responsive img-rounded border-black">
+			</div>
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<p> Severity of issue: <span class="high">HIGH</span> </p>	
+				<p> XSS is extremely dangerous and can be used for all sorts of nefarious acts. Javascript is a powerful language and the ability for any attacker to enter this into your site can lead to terrible security hacks, database breach and malware among other attacks. This again can be solved by sanitizing user input. Never trust client-side data! </p>	
+			</div>
+		</div>
+		<br>
+	</div>	
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1>Database Overload</h1>
+				<hr>
+			</div>
+			<div class="col-md-10 col-md-offset-1 text-left">
+				<p>After performing some 'black box' penetration testing I finally looked at the code for flaws. One page that interested me was <code>http://desolate-bastion-4806.herokuapp.com/sendLocation</code> page because it involved entering data into the database. Right away I noticed that there is no validation or sanitizing of input so valid input could be of any length. I had suspected this from my 'black box' testing but here is the exact code: </p>
+			</div>
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<img src="imgs/sendLocation.png" alt="HTML Curl Example" class="img-responsive img-rounded">
+			</div>	
+			<div class="col-md-10 col-md-offset-1 text-left">
+				<p> This means that I could enter huge numbers and overload the database resulting in either the site shutting down or important data being overwritten. This is an example of input I could have entered (and keep in mind I could do this repeated in a <code>curl</code> loop):</p>
+			</div>
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<img src="imgs/huge_login.png" alt="HTML Curl Example" class="img-responsive img-rounded">
+			</div>				
+			<br>
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<p> Severity of issue: <span class="medium">MEDIUM</span> </p>	
+				<p>This could cause Denial of Service by overloading the database or the destruction of real data through being overwritten. We can protect against this vulnerability by validating input and putting limits on how big or small (or what form) input can be.</p>	
+			</div>
+		</div>
+		<br>
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1>NoSQL Injection</h1>
+				<hr>
+			</div>
+			<div class="col-md-10 col-md-offset-1 text-left">
+				<p>After performing some 'black box' penetration testing I finally looked at the code for flaws. One page that interested me was <code>http://desolate-bastion-4806.herokuapp.com/locations.json</code> page because it involved a query into the database. I wanted to see if I could enter a query that would unload more information then intended. This is code:</p>
+			</div>
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<img src="imgs/locations.png" alt="HTML Curl Example" class="img-responsive img-rounded">
+			</div>				
+			<br>
+
+			<div class="col-md-10 col-md-offset-1 text-left">
+				<p>As you can see there is no validation of the input. Thus any Mongo entry will work. So if I enter something like <code>{$ne:bob}</code> which tells the database to return everything with a login *not* equal to 'bob' then it should return the entire database of documents with logins not equal to bob. This worked. Here is what happened: </p>
+			</div>
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<img src="imgs/nosql_injec.png" alt="HTML Curl Example" class="img-responsive img-rounded">
+			</div>				
+
+			<br>
+			<div class="col-md-10 col-md-offset-1 text-left">				
+				<p> Severity of issue: <span class="high">HIGH</span> </p>	
+				<p> NoSQL Injection is very serious and could lead to the extraction of extremely sensitive and valuable information. This is a problem that must be fixed immediately. The good news is that a fix is relatively easy. When taking database queries we must ensure that login is only a string and does not contain any Mongo commands or other code that could compromise the database's integrity.</p>	
+			</div>
+		</div>
+		<br>
+	</div>
+
+	<div id="conclusion" class="container">
+
+		<div class="row">
+			<div class="col-lg-12">
+				<h1>Conclusion</h1>
+				<hr>
+				<p>In conclusion, it is clear that this site has many security vulnerabilities and action must be taken immediately to shore up its defenses. All of the major flaws of the site come from failure to validate and sanitize user input. Any input that is used to  insert into or query the database must be validated to make sure it does not lead to information leakage. I cannot stress enough that as web developers we can never trust client-side input. That is the major security failure of this web application.</p>
+			</div>
+		</div>
+	</div>
+
+		<!-- Footer -->
+		<footer>
+			<div class="row">
+				<div class="col-lg-10 col-lg-offset-1">
+					<p> Macgill Davis | Web Programming 2014 | Assignment 5</p>
+				</div>
+			</div>
+			<!-- /.row -->
+		</footer>
+
+	</div>
+	<!-- /.container -->
+
+	<!-- jQuery -->
+	<script src="js/jquery.js"></script>
+
+	<!-- Bootstrap Core JavaScript -->
+	<script src="js/bootstrap.min.js"></script>
+
+
+</body>
+
+</html>

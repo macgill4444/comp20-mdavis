@@ -1,0 +1,27 @@
+#introduction, #methodology, #abstract, #issues{
+	padding-top: 40px;
+}
+
+.item {
+	background-color: rgba(128,128,128,.4);
+}
+.border-black {
+	border:solid 1px black;
+}
+
+.high {
+	color: red;
+	font-weight: 900;
+}
+.medium {
+	color: blue;
+	font-weight: 900;
+}
+
+.low {
+	color:green;
+	font-weight: 900;
+}
+.img-rounded {
+	padding-bottom: 10px;
+}
